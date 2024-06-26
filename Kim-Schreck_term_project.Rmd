@@ -1,0 +1,577 @@
+---
+title: "Schreck-Kim_term_project"
+author: "Ross Kim (Schreck)"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: 
+    latex_engine: xelatex
+    toc: yes
+    fig_caption: yes
+    number_sections: yes
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r libraries, echo=TRUE}
+# load libraries
+library('ggplot2')
+library('stringr')
+library('purrr')
+library('ggstatsplot')
+library('Metrics')
+library('coefplot')
+library('dplyr')
+library('tidyr')
+```
+
+```{r read csv01, echo=TRUE}
+# fetch csv
+dt01<-read.csv('/Users/gimjun-won/apt_seoul.csv')
+head(dt01)
+```
+
+```{r col csv01, echo=TRUE}
+# return column names
+colnames(dt01)
+```
+
+```{r summary csv01, echo=TRUE}
+# summary of dt01
+summary(dt01)
+```
+
+```{r remove row csv01, echo=TRUE}
+# remove empty rows
+dt01_row<-dt01[rowSums(is.na(dt01))!=ncol(dt01),]
+head(dt01_row)
+```
+
+```{r remove col csv01, echo=TRUE}
+# remove empty columns
+dt01_col<-dt01_row[,colSums(is.na(dt01_row))!=nrow(dt01_row)]
+head(dt01_col)
+```
+
+```{r replace median csv01, echo=TRUE}
+# replace NA with median
+dt01_mut<-dt01_col%>%mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+summary(dt01_mut)
+```
+
+```{r na.omit csv01, echo=TRUE}
+# remove NA
+dt01_tf<-na.omit(dt01_mut)
+summary(dt01_tf)
+```
+
+```{r remove csv01, echo=TRUE}
+# remove columns
+drop_01<-c('gugun','dong')
+df01_tf_01=dt01_tf[,!(names(dt01_tf)%in%drop_01)]
+colnames(df01_tf_01)
+```
+
+```{r mean housing KR 01, echo=TRUE}
+# mean of housing
+mean(df01_tf_01$pricePerArea)
+```
+
+```{r select lm KR 01, echo=TRUE}
+# linear model of KR housing
+df01_tf_01_lm<-lm(buildDate~avg_sales,data=df01_tf_01)
+df01_tf_01_lm
+```
+
+```{r predict lm KR 01, echo=TRUE}
+# pedictor model of KR housing
+df01_tf_01_lm_pred<-predict(df01_tf_01_lm,data=df01_tf_01)
+head(df01_tf_01_lm_pred)
+```
+
+```{r plot min_sales,buildDate 01, echo=TRUE}
+# plot minimum sales and build date
+ggplot(df01_tf_01,aes(min_sales,buildDate))+
+  geom_point(aes(colour='#000000'),size=0.1)+
+  labs(x='Minimum Sales',y='Build Date',title='Minimum Sales / Build Date')+
+  theme_bw()
+```
+
+```{r plot min_sales,buildDate line 01, echo=TRUE}
+# plot min_sales,buildDate line
+ggplot(df01_tf_01,aes(x=buildDate,y=min_sales))+
+  geom_line(color='#000000',alpha=2,linetype=1)+
+  ggtitle('Build Date / Minimum Sales')
+```
+
+```{r plot max_sales,buildDate 01, echo=TRUE}
+# plot maximum sales and build date
+ggplot(df01_tf_01,aes(max_sales,buildDate))+
+  geom_point(aes(colour='#000000'),size=0.1)+
+  labs(x='Maximum Sales',y='Build Date',title='Maximum Sales / Build Date')+
+  theme_bw()
+```
+
+```{r plot max_sales,buildDate line 01, echo=TRUE}
+# plot max_sales,buildDate line
+ggplot(df01_tf_01,aes(x=buildDate,y=,max_sales))+
+  geom_line(color='#000000',alpha=2,linetype=1)+
+  ggtitle('Build Date / Maximum Sales')
+```
+
+```{r plot pricePerArea,buildDate 01, echo=TRUE}
+# plot price per area and build date
+ggplot(df01_tf_01,aes(pricePerArea,buildDate))+
+  geom_point(aes(colour='#000000'),size=0.1)+
+  labs(x='Price Per Area',y='Build Date',title='Price Per Area / Build Date')+
+  theme_bw()
+```
+
+```{r plot pricePerArea,buildDate line 01, echo=TRUE}
+# plot pricePerArea,buildDate line
+ggplot(df01_tf_01,aes(x=buildDate,y=,pricePerArea))+
+  geom_line(color='#000000',alpha=2,linetype=1)+
+  ggtitle('Build Date / Price Per Area')
+```
+
+```{r read csv02, echo=TRUE}
+# fetch csv
+dt02<-read.csv('/Users/gimjun-won/population(2016-2022).csv')
+head(dt02)
+```
+
+```{r col csv02, echo=TRUE}
+# return column names
+colnames(dt02)
+```
+
+```{r summary csv02, echo=TRUE}
+# summary of dt02
+summary(dt02)
+```
+
+```{r remove row csv02, echo=TRUE}
+# remove empty rows
+dt02_row<-dt02[rowSums(is.na(dt02))!=ncol(dt02),]
+head(dt02_row)
+```
+
+```{r remove col csv02, echo=TRUE}
+# remove empty columns
+dt02_tf<-dt02_row[,colSums(is.na(dt02_row))!=nrow(dt02_row)]
+head(dt02_tf)
+```
+
+```{r select subset ROK 02, echo=TRUE}
+# selection of subset for ROK
+dt02_tf_sel_sk<-dt02_tf[dt02_tf$Country=='South Korea',]
+head(dt02_tf_sel_sk)
+```
+
+```{r remove csv02 ROK, echo=TRUE}
+# remove columns
+drop_02<-c('Urban_Population','Rural_Population','Population_Density')
+dt02_tf_sel_sk_01=dt02_tf_sel_sk[,!(names(dt02_tf_sel_sk)%in%drop_02)]
+colnames(dt02_tf_sel_sk_01)
+```
+
+```{r return tot pop 02, echo=TRUE}
+# return total population
+dt02_tf_sel_sk_01$Total_Population
+```
+
+```{r mean tot pop 02, echo=TRUE}
+# mean of total population
+mean(51585058,51764822,51836239,51744876)
+```
+
+```{r return growth rate KR 02, echo=TRUE}
+# return growth rate
+mean(dt02_tf_sel_sk_01$Birth_Rate)
+```
+
+```{r plot subset ROK 02, echo=TRUE}
+# plot subset ROK 02
+ggplot(dt02_tf_sel_sk_01,aes(x=Year,y=Birth_Rate))+
+  geom_line(color='#000000',alpha=2,linetype=1)+
+  ggtitle('Year / Birth Rate')
+```
+
+```{r select lm KR 02, echo=TRUE}
+# linear model of KR birth rate
+dt02_tf_sel_sk_01_lm<-lm(Year~Birth_Rate,data=dt02_tf_sel_sk_01)
+dt02_tf_sel_sk_01_lm
+```
+
+```{r predict lm KR 02, echo=TRUE}
+# pedictor model of KR birth rate
+dt02_tf_sel_sk_01_lm_pred<-predict(dt02_tf_sel_sk_01_lm,data=dt02_tf_sel_sk_01)
+dt02_tf_sel_sk_01_lm_pred
+```
+
+```{r select subset US 02, echo=TRUE}
+# selection of subset for US
+dt02_tf_sel_us<-dt02_tf[dt02_tf$Country=='United States',]
+head(dt02_tf_sel_us)
+```
+
+```{r remove csv02 US, echo=TRUE}
+# remove columns
+drop_02<-c('Urban_Population','Rural_Population','Population_Density')
+dt02_tf_sel_us_01=dt02_tf_sel_us[,!(names(dt02_tf_sel_us)%in%drop_02)]
+colnames(dt02_tf_sel_us_01)
+```
+
+```{r return growth rate US 02, echo=TRUE}
+# return growth rate
+mean(dt02_tf_sel_us_01$Birth_Rate)
+```
+
+```{r plot subset US 02, echo=TRUE}
+# plot subset US 02
+ggplot(dt02_tf_sel_us_01,aes(x=Year,y=Birth_Rate))+
+  geom_line(color='#000000',alpha=2,linetype=1)+
+  ggtitle('Year / Birth Rate')
+```
+
+```{r select subset NG 02, echo=TRUE}
+# selection of subset for NG
+dt02_tf_sel_ng<-dt02_tf[dt02_tf$Country=='Niger',]
+head(dt02_tf_sel_ng)
+```
+
+```{r remove csv02 NG, echo=TRUE}
+# remove columns
+drop_02<-c('Urban_Population','Rural_Population','Population_Density')
+dt02_tf_sel_ng_01=dt02_tf_sel_ng[,!(names(dt02_tf_sel_ng)%in%drop_02)]
+colnames(dt02_tf_sel_ng_01)
+```
+
+```{r return growth rate NG 02, echo=TRUE}
+# return growth rate
+mean(dt02_tf_sel_ng_01$Birth_Rate)
+```
+
+```{r plot subset NG 02, echo=TRUE}
+# plot subset NG 02
+ggplot(dt02_tf_sel_ng_01,aes(x=Year,y=Birth_Rate))+
+  geom_line(color='#000000',alpha=2,linetype=1)+
+  ggtitle('Year / Birth Rate')
+```
+
+```{r read csv03, echo=TRUE}
+# fetch csv
+dt03<-read.csv('/Users/gimjun-won/real_estate_seoul.csv')
+head(dt03)
+```
+
+```{r col csv03, echo=TRUE}
+# return column names
+colnames(dt03)
+```
+```{r col change csv03, echo=TRUE}
+# change column names
+colnames(dt03)[7] <- 'square_meters'
+colnames(dt03)[8] <- '평'
+```
+
+```{r col new csv03, echo=TRUE}
+# return new column names
+colnames(dt03)
+```
+
+```{r summary csv03, echo=TRUE}
+# summary of dt03
+summary(dt03)
+```
+
+```{r remove row csv03, echo=TRUE}
+# remove empty rows
+dt03_row<-dt03[rowSums(is.na(dt03))!=ncol(dt03),]
+head(dt03_row)
+```
+
+```{r remove col csv03, echo=TRUE}
+# remove empty columns
+dt03_col<-dt03_row[,colSums(is.na(dt03_row))!=nrow(dt03_row)]
+head(dt03_col)
+```
+
+```{r replace median csv03, echo=TRUE}
+# replace NA with median
+dt03_mut<-dt03_col%>%mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+summary(dt03_mut)
+```
+
+```{r na.omit csv03, echo=TRUE}
+# remove NA
+dt03_tf<-na.omit(dt03_mut)
+summary(dt03_tf)
+```
+
+```{r remove csv03, echo=TRUE}
+# remove columns
+drop_03<-c('lat','lng')
+dt03_tf_01=dt03_tf[,!(names(dt03_tf)%in%drop_03)]
+colnames(dt03_tf_01)
+```
+
+```{r mean size KR 03, echo=TRUE}
+# mean of size
+mean(dt03_tf_01$square_meters)
+```
+
+```{r mean sales KR 03, echo=TRUE}
+# mean of sales
+mean(dt03_tf_01$avg_sales)
+```
+
+```{r plot score,buildDate 03, echo=TRUE}
+# plot score and build date
+ggplot(dt03_tf_01,aes(score,buildDate))+
+  geom_point(aes(colour='#000000'),size=0.1)+
+  labs(x='Score',y='Build Date',title='Score / Build Date')+
+  theme_bw()
+```
+
+```{r plot avg_sales,buildDate 03, echo=TRUE}
+# plot average sales and build date
+ggplot(dt03_tf_01,aes(avg_sales,buildDate))+
+  geom_point(aes(colour='#000000'),size=0.1)+
+  labs(x='Average Sales',y='Build Date',title='Average Sales / Build Date')+
+  theme_bw()
+```
+
+```{r combine housing 01 03, echo=TRUE}
+# combine housing data sets
+dt01_dt03<-df01_tf_01%>%full_join(dt03_tf_01)
+colnames(dt01_dt03)
+```
+
+```{r plot housing 01 03, echo=TRUE}
+# plot of housing
+ggplot(dt01_dt03,aes(x=buildDate))+ 
+  geom_line(aes(y=avg_sales),color='#34235954')+ 
+  geom_line(aes(y=pricePerArea),color='#983532',linetype='twodash') 
+```
+
+```{r read csv04, echo=TRUE}
+# fetch csv
+dt04<-read.csv('/Users/gimjun-won/ROK_demographics_2000-2022.csv')
+head(dt04)
+```
+
+```{r col csv04, echo=TRUE}
+# return column names
+colnames(dt04)
+```
+
+```{r summary csv04, echo=TRUE}
+# summary of dt04
+summary(dt04)
+```
+
+```{r remove row csv04, echo=TRUE}
+# remove empty rows
+dt04_row<-dt04[rowSums(is.na(dt04))!=ncol(dt04),]
+head(dt04_row)
+```
+
+```{r remove col csv04, echo=TRUE}
+# remove empty columns
+dt04_col<-dt04_row[,colSums(is.na(dt04_row))!=nrow(dt04_row)]
+head(dt04_col)
+```
+
+```{r na.omit csv04, echo=TRUE}
+# remove NA
+dt04_tf<-na.omit(dt04_col)
+summary(dt04_tf)
+```
+
+```{r remove csv04, echo=TRUE}
+# remove columns
+drop_04<-c('Region')
+dt04_tf_01=dt04_tf[,!(names(dt04_tf)%in%drop_04)]
+colnames(dt04_tf_01)
+```
+
+```{r return divorce rate KR 04, echo=TRUE}
+# return divorce rate
+mean(dt04_tf_01$Divorce_rate)
+```
+
+```{r plot line ROK dems 04, echo=TRUE}
+# plot ROK demographics
+ggplot(dt04_tf_01,aes(x=Date))+   
+    geom_line(aes(y=Birth_rate),color='#000000')+ 
+    geom_line(aes(y=Death_rate),color='#999999')+ 
+    geom_line(aes(y=Marriage_rate),color='#111111')+ 
+    geom_line(aes(y=Divorce_rate),color='#888888')+ 
+    geom_line(aes(y=Natural_growth_rate),color='#555555') 
+```
+
+```{r plot ROK dems 04, echo=TRUE}
+# plot birth rate
+ggplot(dt04_tf_01,aes(Date,Birth_rate))+
+  geom_point(aes(colour='#000000'),size=0.1)+
+  labs(x='Date',y='Birth Rate',title='Birth Rate')+
+  theme_bw()
+```
+
+```{r return date, echo=TRUE}
+# return date
+head(dt04_tf_01$Date)
+```
+
+```{r read csv05, echo=TRUE}
+# fetch csv
+dt05<-read.csv('/Users/gimjun-won/who_suicide_statistics.csv')
+head(dt05)
+```
+
+```{r col csv05, echo=TRUE}
+# return column names
+colnames(dt05)
+```
+
+```{r summary csv05, echo=TRUE}
+# summary of dt05
+summary(dt05)
+```
+
+```{r remove row csv05, echo=TRUE}
+# remove empty rows
+dt05_row<-dt05[rowSums(is.na(dt05))!=ncol(dt05),]
+head(dt05_row)
+```
+
+```{r remove col csv05, echo=TRUE}
+# remove empty columns
+dt05_col<-dt05_row[,colSums(is.na(dt05_row))!=nrow(dt05_row)]
+head(dt05_col)
+```
+
+```{r replace median csv05, echo=TRUE}
+# replace NA with median
+dt05_mut<-dt05_col%>%mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+summary(dt05_mut)
+```
+
+```{r na.omit csv05, echo=TRUE}
+# remove NA
+dt05_tf<-na.omit(dt05_mut)
+summary(dt05_tf)
+```
+
+```{r select subset suic KR 05, echo=TRUE}
+# selection of subset for KR suicides
+dt05_tf_sel_kr<-dt05_tf[dt05_tf$country=='Republic of Korea',]
+head(dt05_tf_sel_kr)
+```
+
+```{r remove csv05 KR, echo=TRUE}
+# remove columns
+drop_05<-c('sex')
+dt05_tf_sel_kr_01=dt05_tf_sel_kr[,!(names(dt05_tf_sel_kr)%in%drop_04)]
+colnames(dt05_tf_sel_kr_01)
+```
+
+```{r remove mean suicides 05, echo=TRUE}
+# mean of suicides
+mean(dt05_tf_sel_kr_01$suicides_no)
+```
+
+```{r plot subset suic KR, echo=TRUE}
+# plot of subset for KR suicides
+ggplot(dt05_tf_sel_kr_01,aes(x=year))+   
+    geom_line(aes(y=suicides_no),color='#000000')
+```
+
+```{r plot suic 05, echo=TRUE}
+# plot suicides
+ggplot(dt05_tf_sel_kr_01,aes(year,suicides_no))+
+  geom_point(aes(colour='#000000'),size=0.1)+
+  labs(x='Year',y='Suicides',title='Suicide Rate')+
+  theme_bw()
+```
+
+```{r select subset suic US 05, echo=TRUE}
+# selection of subset for US suicides
+dt05_tf_sel_us<-dt05_tf[dt05_tf$country=='United States of America',]
+head(dt05_tf_sel_us)
+```
+
+```{r remove csv05 US, echo=TRUE}
+# remove columns
+drop_05<-c('sex')
+dt05_tf_sel_us_01=dt05_tf_sel_us[,!(names(dt05_tf_sel_us)%in%drop_05)]
+colnames(dt05_tf_sel_us_01)
+```
+
+```{r plot subset suic US, echo=TRUE}
+# plot of subset for US suicides
+ggplot(dt05_tf_sel_us_01,aes(x=year))+   
+    geom_line(aes(y=suicides_no),color='#000000')
+```
+
+```{r combine kr us 05, echo=TRUE}
+# combine KR and US demographic data sets
+dt05kr_dt05us<-dt05_tf_sel_kr_01%>%full_join(dt05_tf_sel_us_01)
+colnames(dt05kr_dt05us)
+```
+
+```{r plot pop 05, echo=TRUE}
+# visualisation of population trends of KR (bottom) US (top)
+ggplot(dt05kr_dt05us,aes(x=year,y=population))+geom_point()
+```
+
+```{r read csv06, echo=TRUE}
+# fetch csv
+dt06<-read.csv('/Users/gimjun-won/ROK_income_welfare.csv')
+head(dt06)
+```
+
+```{r col csv06, echo=TRUE}
+# return column names
+colnames(dt06)
+```
+
+```{r summary csv06, echo=TRUE}
+# summary of dt06
+summary(dt06)
+```
+
+```{r replace median csv06, echo=TRUE}
+# replace NA with median
+dt06_tf<-dt06%>%mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+summary(dt06_tf)
+```
+
+```{r remove csv06, echo=TRUE}
+# remove columns
+drop_06<-c('wave','region','family_member','gender','religion','company_size','reason_none_worker')
+dt06_tf_01=dt06_tf[,!(names(dt06_tf)%in%drop_06)]
+colnames(dt06_tf_01)
+```
+
+```{r plot ROK inc, echo=TRUE}
+# plot ROK income
+ggplot(dt06_tf_01,aes(x=year))+
+    geom_line(aes(y=income),color='#000000')+ 
+    geom_line(aes(y=education_level),color='#999999')+ 
+    geom_line(aes(y=occupation),color='#111111')+ 
+    geom_line(aes(y=marriage),color='#555555') 
+```
+
+```{r plot ROK inc 06, echo=TRUE}
+# plot income
+ggplot(dt06_tf_01,aes(year,income))+
+  geom_point(aes(colour='#000000'),size=0.1)+
+  labs(x='Year',y='Income',title='Income Rate')+
+  theme_bw()
+```
