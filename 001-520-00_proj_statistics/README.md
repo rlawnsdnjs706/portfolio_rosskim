@@ -1,4 +1,4 @@
-# 001-520-00_proj_statistics
+# 520-00_proj_statistics
 
 Solutions for the Declining Birthrate of the ROK
 
