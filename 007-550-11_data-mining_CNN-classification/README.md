@@ -1,4 +1,4 @@
-# 007-550-11_data-mining_CNN-classification.ipynb
+# 550-11_data-mining_CNN-classification.ipynb
 
 CNN Classification
 
