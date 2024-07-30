@@ -1,4 +1,4 @@
-# 010-630-08_predictive-analytics_time-series.ipynb
+# 630-08_predictive-analytics_time-series.ipynb
 
 Time Series Analytics
 
