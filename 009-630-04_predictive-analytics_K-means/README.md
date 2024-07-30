@@ -1,4 +1,4 @@
-# 009-630-04_predictive-analytics_K-means.ipynb
+# 630-04_predictive-analytics_K-means.ipynb
 
 K-means Clustering
 
