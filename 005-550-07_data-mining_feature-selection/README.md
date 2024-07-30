@@ -1,4 +1,4 @@
-# 005-550-07_data-mining_feature-selection.ipynb
+# 550-07_data-mining_feature-selection.ipynb
 
 Feature Selection
 
