@@ -1,4 +1,4 @@
-# 006-550-09_data-mining_KNN-classification.ipynb
+# 550-09_data-mining_KNN-classification.ipynb
 
 KNN Classification
 
