@@ -1,4 +1,4 @@
-# 014-680-01_proj_applied-data-science.ipynb
+# 680-01_proj_applied-data-science.ipynb
 
 Exploring Policies to Curb the Rate of Stomach Cancer in the ROK
 
