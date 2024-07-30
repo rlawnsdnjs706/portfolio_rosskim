@@ -1,4 +1,4 @@
-# 002-530-00_proj_EDA-data-analysis.ipynb
+# 530-00_proj_EDA-data-analysis.ipynb
 
 Main Causes of the decline in Birth Rate of the ROK
 
