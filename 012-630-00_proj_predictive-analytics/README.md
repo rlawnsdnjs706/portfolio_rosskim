@@ -1,4 +1,4 @@
-# 012-630-00_proj_predictive-analytics.ipynb
+# 630-00_proj_predictive-analytics.ipynb
 
 Exploring Policies to Stabilize Housing Prices in the ROK
 
