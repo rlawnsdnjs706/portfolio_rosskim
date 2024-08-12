@@ -15,7 +15,6 @@ install necessary packages for R and Python.
 
 ```
 knitr::opts_chunk$set(echo = TRUE)
-dt = pd.read_csv('ROK_demographics_2000-2022.csv')
 ```
 
 ## Contributing
